@@ -93,7 +93,6 @@ def execute(filters=None):
             filters={"parent": slip.name},
             fields=["salary_component", "amount", "parentfield"],
         )
-        print("salary_details", salary_details)
 
 
         basic = 0
@@ -104,15 +103,13 @@ def execute(filters=None):
                 salary_comp = frappe.get_doc("Salary Component", salary_detail.salary_component)
                 if salary_comp.custom_salary_component_type == "Basic" or salary_comp.custom_salary_component_type == "Dearness Allowance":
                     basic += salary_detail.amount
-                elif salary_comp.custom_salary_component_type == "PF Employer" and salary_detail.parentfield=="deductions":
+                elif salary_comp.custom_salary_component_type == "PF" and salary_detail.parentfield=="deductions":
                     provident_fund += salary_detail.amount
 
                 # ? If EE share is already specified in Salary Detail, use that instead of calculating from wages
-                print("salary_comp", salary_comp.name, salary_comp.custom_salary_component_type)
                 if salary_comp.custom_salary_component_type == "PF" and salary_detail.parentfield=="deductions":
                     ee_share_remitted = salary_detail.amount
 
-        print("provident_fund", provident_fund)
 
         epf_wages = basic
        
@@ -159,5 +156,4 @@ def execute(filters=None):
                 "refund_of_advance": 0,
             }
             data.append(row)
-    print("data", data)
     return columns, data
