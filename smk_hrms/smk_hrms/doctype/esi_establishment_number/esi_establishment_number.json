@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:esi_establishment_number",
  "creation": "2026-04-09 20:11:16.271999",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -11,16 +12,18 @@
   {
    "fieldname": "esi_establishment_number",
    "fieldtype": "Data",
-   "label": "ESI Establishment Number"
+   "label": "ESI Establishment Number",
+   "unique": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-09 20:11:25.814601",
+ "modified": "2026-04-10 17:21:10.789752",
  "modified_by": "Administrator",
  "module": "SMK HRMS",
  "name": "ESI Establishment Number",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
