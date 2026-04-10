@@ -72,10 +72,12 @@ class SalarySlip(TransactionBase):
                 frappe.throw(_("No Salary Structure Assignment found for this employee and salary structure."))
             
             base = salary_structure_assignment[0].base
-            abbr = "B"  # The abbreviation you want to look for
+            # abbr = "B_1" # The abbreviation you want to look for
 
             # Fetch salary component for abbreviation 'B'
-            component_name, component_value = find_salary_component_from_abbr(self, abbr)
+            # component_name, component_value = find_salary_component_from_abbr(self, abbr)
+            
+            component_name, component_value, found_abbr = find_salary_component(self)
 
             # If component is None or 0, skip processing this component
             if component_name is None or component_value == 0:            
@@ -84,7 +86,7 @@ class SalarySlip(TransactionBase):
             # frappe.msgprint(_("Found Salary Component: {0}, Amount: {1}").format(component_name, component_value))
 
             # Prepare variables for formula evaluation
-            variables = {"B": component_value, "base": base, "start_month": start_month}
+            variables = {found_abbr: component_value, "base": base, "start_month": start_month}
         
             self.custom_employer_contribution_table = []
         
@@ -227,14 +229,31 @@ def eval_salary_formula(formula, variables):
         except Exception:
             return 0
         
-def find_salary_component_from_abbr(self, abbr):
-    """Find the salary component value and name by abbreviation."""
+# def find_salary_component_from_abbr(self, abbr):
+#     """Find the salary component value and name by abbreviation."""
+#     salary_slip_doc = frappe.get_doc("Salary Slip", self.name)
+
+#     # Search in earnings and deductions
+#     for table in [salary_slip_doc.earnings, salary_slip_doc.deductions]:
+#         for item in table:
+#             if item.salary_component and item.abbr == abbr:
+#                 return item.salary_component, item.amount
+            
+#     return None, 0
+
+def find_salary_component(self):
     salary_slip_doc = frappe.get_doc("Salary Slip", self.name)
 
-    # Search in earnings and deductions
+    # First: try exact "B"
     for table in [salary_slip_doc.earnings, salary_slip_doc.deductions]:
         for item in table:
-            if item.salary_component and item.abbr == abbr:
-                return item.salary_component, item.amount
+            if item.salary_component and item.abbr == "B":
+                return item.salary_component, item.amount, item.abbr
 
-    return None, 0
+    # Second: fallback to "B_1"
+    for table in [salary_slip_doc.earnings, salary_slip_doc.deductions]:
+        for item in table:
+            if item.salary_component and item.abbr == "B_1":
+                return item.salary_component, item.amount, item.abbr
+
+    return None, 0, None
