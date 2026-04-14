@@ -46,13 +46,10 @@ class SalarySlip(TransactionBase):
                     alert=True,
                 )
 
-    
-
-    def calculate_employer_contribution(self):
-        
+    def calculate_employer_contribution(self):      
         emp = self.employee
         salary_structure = self.salary_structure
-        start_date = self.start_date  # Example: 2024-07-24
+        start_date = self.start_date 
         formatted_date = formatdate(start_date, "dd-mm-yyyy")  # Format to dd-mm-yyyy
         start_month = getdate(start_date).month  # Extract the month from the start_date
         # frappe.msgprint(_("Formatted Start Date: {0}, Month: {1}").format(formatted_date, start_month))
@@ -73,9 +70,6 @@ class SalarySlip(TransactionBase):
             
             base = salary_structure_assignment[0].base
             # abbr = "B_1" # The abbreviation you want to look for
-
-            # Fetch salary component for abbreviation 'B'
-            # component_name, component_value = find_salary_component_from_abbr(self, abbr)
             
             component_name, component_value, found_abbr = find_salary_component(self)
 
@@ -101,7 +95,23 @@ class SalarySlip(TransactionBase):
                     if error:
                         evaluated_formula = 0 
                         continue
-                
+                    
+                    if row.salary_component in [
+                        "Labor Welfare Fund SMK",
+                        "Labor Welfare Fund Employer Share"
+                    ]:
+                        comp_type = frappe.get_value(
+                            "Salary Component",
+                            row.salary_component,
+                            "custom_salary_component_type"
+                        )
+
+                        if not (
+                            comp_type in ["LWF Employer", "LWF"]
+                            and frappe.get_value("Employee", self.employee, "custom_lwf_consent") == 1
+                        ):
+                            evaluated_formula = 0
+
                 self.append("custom_employer_contribution_table", {
                     "salary_component": row.salary_component,
                     "amount": evaluated_formula
@@ -229,18 +239,7 @@ def eval_salary_formula(formula, variables):
         except Exception:
             return 0
         
-# def find_salary_component_from_abbr(self, abbr):
-#     """Find the salary component value and name by abbreviation."""
-#     salary_slip_doc = frappe.get_doc("Salary Slip", self.name)
-
-#     # Search in earnings and deductions
-#     for table in [salary_slip_doc.earnings, salary_slip_doc.deductions]:
-#         for item in table:
-#             if item.salary_component and item.abbr == abbr:
-#                 return item.salary_component, item.amount
-            
-#     return None, 0
-
+# ? Find Salary Component "B" or fallback to "B_1"
 def find_salary_component(self):
     salary_slip_doc = frappe.get_doc("Salary Slip", self.name)
 
