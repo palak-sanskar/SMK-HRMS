@@ -39,30 +39,5 @@ frappe.query_reports["ESIC Challan"] = {
             options: "Company",
             reqd: 0
         },
-        {
-            fieldname: "work_location",
-            label: __("Work Location"),
-            fieldtype: "Link",
-            options: "Address",
-            reqd: 0
-        },
-        {
-            fieldname: "custom_esi_establishment_number",
-            label: __("ESI Establishment Number"),
-            fieldtype: "Link",
-            options: "ESI Establishment Number",
-            reqd: 0
-        },
-        {
-            fieldname: "salary_slip_status",
-            label: __("Salary Slip Status"),
-            fieldtype: "Select",
-            options: [
-                "",
-                "Draft",
-                "Submitted"
-            ],
-            default: ""
-        }
     ],
 };

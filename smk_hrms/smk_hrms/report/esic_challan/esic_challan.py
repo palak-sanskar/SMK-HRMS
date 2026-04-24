@@ -18,37 +18,11 @@ def get_columns():
 			"fieldtype": "Data",
 			"width": 150
 		},
-        {
-			"fieldname": "employee",
-			"label": "Employee",
-			"fieldtype": "Link",
-			"width": 200,
-            "options": "Employee"
-		},
 		{
 			"fieldname": "ip_name",
 			"label": "IP Name",
 			"fieldtype": "Data",
-			"width": 200
-		},
-        {
-            "fieldname":"custom_esi_establishment_number",
-            "label":"ESI Establishment Number",
-            "fieldtype": "Data",
-            "width":200
-        },
-        {
-			"fieldname": "work_location",
-			"label": "Work Location",
-			"fieldtype": "Link",
-			"width": 200,
-            "options": "Address"
-		},
-		{
-			"fieldname": "salary_slip_status",
-			"label": "Salary Slip Status",
-			"fieldtype": "Data",
-			"width": 150
+			"width": 300
 		},
 		{
 			"fieldname": "total_no_of_days",
@@ -66,7 +40,7 @@ def get_columns():
 			"fieldname": "reason",
 			"label": "Reason Code for Zero Working Days",
 			"fieldtype": "Data",
-			"width": 120
+			"width": 200
 		},
 		{
 			"fieldname":"last_working_day",
@@ -188,11 +162,11 @@ def get_data(filters):
 			
                 row = {
                     "ip_number": employee.custom_esi_number,
-                    "employee": employee.name,
+                    # "employee": employee.name,
                     "ip_name": slip_data.employee_name,
-                    "custom_esi_establishment_number":employee.custom_esi_establishment_number,
-                    "work_location": employee.custom_work_location,
-                    "salary_slip_status": slip_status,
+                    # "custom_esi_establishment_number":employee.custom_esi_establishment_number,
+                    # "work_location": employee.custom_work_location,
+                    # "salary_slip_status": slip_status,
                     "total_no_of_days": slip_data.payment_days,
                     "total_monthly_wages": gross_pay,
                     "reason": reason_code,
